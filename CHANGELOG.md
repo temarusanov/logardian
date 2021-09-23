@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/i-link-pro-team/logardian/compare/v1.0.2...v1.1.0) (2021-09-23)
+
+
+### Features
+
+* templates for issue ([8816803](https://github.com/i-link-pro-team/logardian/commit/881680303c920324938d5a9bda14aa3ea34e4091))
+
 ## [1.0.2](https://github.com/i-link-pro-team/logardian/compare/v1.0.1...v1.0.2) (2021-09-23)
 
 
