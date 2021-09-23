@@ -1,36 +1,30 @@
---- 
-jobs: 
-  build: 
+name: Node.js package
+
+on:
+ pull_request:
+ push:
+   branches: [ main ]
+
+jobs:
+ build:
     runs-on: ubuntu-latest
-    steps: 
-      - 
-        uses: actions/checkout@v2
-      - 
-        uses: actions/setup-node@v2
-        with: 
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
           node-version: 14
-      - 
-        run: "npm ci"
-  release: 
-    if: "github.event_name == 'push' && github.ref == 'refs/heads/master'"
-    runs-on: ubuntu-latest
-    steps: 
-      - 
-        uses: actions/checkout@v2
-      - 
-        uses: actions/setup-node@v1
-        with: 
-          node-version: 14
-      - 
-        run: "npm ci"
-      - 
-        env: 
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          NPM_TOKEN: "${{ secrets.NPM_TOKEN }}"
-        run: "npx semantic-release"
-name: "Node.js package"
-true: 
-  pull_request: ~
-  push: 
-    branches: 
-      - main
+      - run: npm ci
+
+ release:
+  if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v2
+   - uses: actions/setup-node@v1
+     with:
+       node-version: 14
+   - run: npm ci
+   - run: npx semantic-release
+     env:
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
