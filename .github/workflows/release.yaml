@@ -1,42 +1,36 @@
-name: release
-
-on:
- pull_request:
- push:
-  branches: [ main ]
-
-jobs:
- test:
-  runs-on: ubuntu-latest
-  strategy:
-   matrix:
-    # Run the steps below with the following versions of Node.js
-    node-version: [8.x, 10.x, 12.x]
-  steps:
-  # Fetch the latest commit
-   uses: actions/checkout@v2
-  # Setup Node.js using the appropriate version
-   uses: actions/setup-node@v1
-   with:
-    node-version: ${{ matrix.node-version }}
-  # Install package dependencies
-   run: npm ci
-  # Run tests
-   run: npm test
-
- release:
-  # Only release on push to master
-  if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-  runs-on: ubuntu-latest
-  # Waits for test jobs for each Node.js version to complete
-  needs: [test]
-  steps:
-   uses: actions/checkout@v2
-   uses: actions/setup-node@v1
-   with:
-    node-version: 12.x
-   run: npm ci
-   run: npx semantic-release
-   env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+--- 
+jobs: 
+  build: 
+    runs-on: ubuntu-latest
+    steps: 
+      - 
+        uses: actions/checkout@v2
+      - 
+        uses: actions/setup-node@v2
+        with: 
+          node-version: 14
+      - 
+        run: "npm ci"
+  release: 
+    if: "github.event_name == 'push' && github.ref == 'refs/heads/master'"
+    runs-on: ubuntu-latest
+    steps: 
+      - 
+        uses: actions/checkout@v2
+      - 
+        uses: actions/setup-node@v1
+        with: 
+          node-version: 14
+      - 
+        run: "npm ci"
+      - 
+        env: 
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          NPM_TOKEN: "${{ secrets.NPM_TOKEN }}"
+        run: "npx semantic-release"
+name: "Node.js package"
+true: 
+  pull_request: ~
+  push: 
+    branches: 
+      - main
