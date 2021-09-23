@@ -10,13 +10,14 @@ const labels = parseLabels()
 
 /**
  * Feature:
- * - Uses winston lib underneath
+ * - Uses [winston](https://github.com/winstonjs/winston) lib underneath
  * - Various layers of logs that can be turned on/off via .env (`LOGARDIAN_LABELS`)
  * - In production mode debug() does not work and all logs are sent in json format
  * - Datetime in UTC format
  * - Format of logs: `[time] [level] [layer] [message]`
  * - In debug mode the path and name of the function that called the log is displayed
  * - Can be used instead of NestJS Logger
+ * - Can log any objects, arrays, variables
  *
  * Logger config
  *

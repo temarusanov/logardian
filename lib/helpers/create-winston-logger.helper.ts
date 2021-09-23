@@ -2,9 +2,8 @@
 require('dotenv').config()
 import { Logger, format, transports, createLogger } from 'winston'
 import * as chalk from 'chalk'
-import * as dateFormat from 'dateformat'
-import { colorizeContext } from './colorize-context.helper'
 import { Format } from 'logform'
+import { colorizeContext } from './colorize-context.helper'
 
 const JSON_SPACE = 2
 const isProduction = process.env.NODE_ENV === 'production'
@@ -63,9 +62,9 @@ function createLine(info: any): string {
 }
 
 function getTime(timestamp: string): string {
-    const time = dateFormat(timestamp, 'dd-mm-yyyy HH:MM:ss', true)
+    const time = new Date(timestamp).toISOString()
 
-    return `${chalk.cyan(`[${time}]`)}`
+    return `${chalk.cyan(`[${`${time.substr(0, 10)} ${time.substr(11, 8)}`}]`)}`
 }
 
 function getMessage(message: string) {
