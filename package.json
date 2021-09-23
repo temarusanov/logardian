@@ -1,11 +1,15 @@
 {
   "name": "logardian",
   "version": "1.0.0",
-  "description": "",
+  "description": "Minimalistic, fast, powerful node.js logger by I-Link Team",
   "author": "I-Link",
   "private": false,
   "main": "./dist/index.js",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/i-link-pro-team/logardian"
+  },
   "scripts": {
     "prepare": "tsc",
     "format": "prettier --write \"lib/**/*.ts\"",
@@ -46,6 +50,7 @@
     "@semantic-release/github": "^8.0.1",
     "@semantic-release/npm": "^8.0.0",
     "@semantic-release/release-notes-generator": "^10.0.2",
+    "@types/dateformat": "^3.0.1",
     "@types/node": "^15.12.2",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
