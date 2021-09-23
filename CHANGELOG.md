@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/i-link-pro-team/logardian/compare/v1.0.1...v1.0.2) (2021-09-23)
+
+
+### Bug Fixes
+
+* remove dateformat, use common date ([a3f2381](https://github.com/i-link-pro-team/logardian/commit/a3f2381f9567faba847a7cc2ee34fad8836fad01))
+
 ## [1.0.1](https://github.com/i-link-pro-team/logardian/compare/v1.0.0...v1.0.1) (2021-09-23)
 
 
