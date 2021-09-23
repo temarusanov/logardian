@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/i-link-pro-team/logardian/compare/v1.0.0...v1.0.1) (2021-09-23)
+
+
+### Bug Fixes
+
+* remove pull_request from github workflow ([719a88f](https://github.com/i-link-pro-team/logardian/commit/719a88f90bd3b7091415f0781f7cdbee73a099ba))
+
 # 1.0.0 (2021-09-23)
 
 
