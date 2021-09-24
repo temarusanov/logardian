@@ -7,39 +7,39 @@ const isProduction = process.env.NODE_ENV === 'production'
 interface FunctionTraceInfo {
     caller?: string
     path?: string
-    trace: boolean
 }
 
 export const getFunctionTrace = (
     level: string,
     meta: any[],
 ): FunctionTraceInfo => {
-    const isTraceEnabled = isTraceEnabledByDefault(level)
-    const result: FunctionTraceInfo = {
-        trace: isTraceEnabled,
-    }
+    let isTraceEnabled = isTraceEnabledByDefault(level)
+
+    const result: FunctionTraceInfo = {}
 
     const executorFromConfig = meta.find(
         (value: any) => typeof value === 'object' && 'trace' in value,
     )
 
     if (executorFromConfig) {
-        result.trace = executorFromConfig.executor
+        isTraceEnabled = executorFromConfig.trace
     }
 
-    try {
-        throw new Error()
-    } catch (error) {
-        const stacktrace = error.stack.split(' at ') as string[]
+    if (isTraceEnabled) {
+        try {
+            throw new Error()
+        } catch (error) {
+            const stacktrace = error.stack.split(' at ') as string[]
 
-        const context = stacktrace[CONTEXT_INDEX_IN_STACK]
+            const context = stacktrace[CONTEXT_INDEX_IN_STACK]
 
-        const [caller, functionPath] = context.split(' (')
+            const [caller, functionPath] = context.split(' (')
 
-        const [path] = functionPath.split(')')
+            const [path] = functionPath.split(')')
 
-        result.path = path
-        result.caller = caller
+            result.path = path
+            result.caller = caller
+        }
     }
 
     return result
