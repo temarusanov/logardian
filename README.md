@@ -7,7 +7,7 @@ Logger using Winston to output minimalistic, readable logs.
 
 - Logstash support
 
-- File logging
+- Logging to file
 
   
 ## Installation
