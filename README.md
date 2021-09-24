@@ -89,7 +89,7 @@ logger.log(`User ${user.name} has new transaction`, transaction, { trace: true }
 ```
 ```json
 {
-  "timestamp": "2021-09-24T04:03:27.326Z"
+  "timestamp": "2021-09-24T04:03:27.326Z",
   "level": "info",
   "message": "User Tema has new transaction",
   "metadata": {
