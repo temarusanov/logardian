@@ -10,7 +10,7 @@ import { colorizeContext } from './colorize-context.helper'
 const JSON_SPACE = 2
 const isProduction = process.env.NODE_ENV === 'production'
 
-const { combine, timestamp, printf, colorize } = format
+const { combine, timestamp, printf, colorize, splat, simple } = format
 
 const colorizer = colorize()
 
@@ -29,8 +29,8 @@ export const createWinstonLogger = (): Logger => {
 function createWinstonFormat(): Format {
     return combine(
         timestamp(),
-        format.splat(),
-        format.simple(),
+        splat(),
+        simple(),
         printf((info) =>
             isProduction
                 ? createProductionLog(info)
