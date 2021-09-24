@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/i-link-pro-team/logardian/compare/v1.1.0...v1.1.1) (2021-09-24)
+
+
+### Bug Fixes
+
+* add milliseconds to date log ([dae933d](https://github.com/i-link-pro-team/logardian/commit/dae933dbf44e42927fc24a6a9c2706e67fa1dc2a))
+* production log didnt show metadata ([9d70071](https://github.com/i-link-pro-team/logardian/commit/9d70071497ad0bbb262885f14a50a9c86172fc55))
+
 # [1.1.0](https://github.com/i-link-pro-team/logardian/compare/v1.0.2...v1.1.0) (2021-09-23)
 
 
