@@ -85,8 +85,11 @@ function getTime(timestamp: string): string {
     const time = new Date(timestamp).toISOString()
 
     // 2021-09-24T05:10:47.306Z => 2021-09-24 05:10:47
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    return `${chalk.cyan(`[${`${time.substr(0, 10)} ${time.substr(11, 8)}`}]`)}`
+
+    return `${chalk.cyan(
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        `[${`${time.substr(0, 10)} ${time.substr(11, 12)}`}]`,
+    )}`
 }
 
 function getLevel(level: string): string {

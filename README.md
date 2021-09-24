@@ -60,7 +60,7 @@ logger.debug(`Hi! I'm debug log example`, { some: 'object' })
 
 #### How does it implement NestJS Logger without any framework libs?
 
-We made logger based on [LoggerService](https://github.com/nestjs/nest/blob/master/packages/common/services/logger.service.ts) but does not use it, so as not to include the NestJS libraries. But you can also use the Logardian instead of common NestJS logger.
+We made logger based on [LoggerService](https://github.com/nestjs/nest/blob/master/packages/common/services/logger.service.ts) but we don't explicitly implement so that we stay dependless of NestJS libraries. But you can also use the Logardian instead of common NestJS logger.
 
 ```ts
 // main.ts
