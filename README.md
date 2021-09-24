@@ -128,6 +128,6 @@ LOGARDIAN_LABELS=emails,* # output every log with label
   
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://github.com/i-link-pro-team/logardian/blob/main/LICENSE)
 
   
