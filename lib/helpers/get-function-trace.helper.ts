@@ -34,16 +34,17 @@ export const getFunctionTrace = (
 
             const context = stacktrace[CONTEXT_INDEX_IN_STACK]
 
-        const [caller, functionTrace] = context.split('(')
+            const [caller, functionTrace] = context.split('(')
 
-        if (!functionTrace) {
-            result.path = caller
-            result.caller = `anonymous function`
-        } else {
-            const [path] = functionTrace.split(')')
+            if (!functionTrace) {
+                result.path = caller
+                result.caller = `anonymous function`
+            } else {
+                const [path] = functionTrace.split(')')
 
-            result.path = path
-            result.caller = caller
+                result.path = path
+                result.caller = caller
+            }
         }
     }
 

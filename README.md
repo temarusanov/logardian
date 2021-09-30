@@ -55,6 +55,8 @@ logger.debug(`Hi! I'm debug log example`, { some: 'object' })
 
 `LOGARDIAN_LABELS` labels to be logged in the console. For example *LOGARDIAN_LABELS=database,http*
 
+`LOGARDIAN_TRACE` turn off default function callers logs (debug, warn, error)
+
   
 ## FAQ
 
@@ -89,7 +91,7 @@ logger.log(`User ${user.name} has new transaction`, transaction, { trace: true }
 ```
 ```json
 {
-  "timestamp": "2021-09-24T04:03:27.326Z"
+  "timestamp": "2021-09-24T04:03:27.326Z",
   "level": "info",
   "message": "User Tema has new transaction",
   "metadata": {
@@ -125,7 +127,21 @@ LOGARDIAN_LABELS=http,database # output log with http and database labels
 LOGARDIAN_LABELS=emails,* # output every log with label
 ```
 
-  
+#### I do not want to see caller and path. How can I turn off them globally?
+
+Specify 'false' on LOGARDIAN_TRACE in *.env*. Works only in dev. 
+If you specify `trace: true` in logger function trace will log in spite of .env option
+
+Priority of trace from high to low:
+
+1. Production mode
+2. `trace: true` in function config
+3. `LOGARDIAN_TRACE=false` in .env
+
+```bash
+LOGARDIAN_TRACE=false
+```
+
 ## License
 
 [MIT](https://github.com/i-link-pro-team/logardian/blob/main/LICENSE)
