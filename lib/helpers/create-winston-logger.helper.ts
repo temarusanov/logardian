@@ -47,6 +47,10 @@ function createProductionLog(info: any): string {
         label,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         trace,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        caller,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        path,
         ...meta
     } = info
 

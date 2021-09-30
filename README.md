@@ -44,16 +44,41 @@ logger.verbose(`Hi! I'm verbose log example`, { label: 'database' })
 logger.debug(`Hi! I'm debug log example`, { some: 'object' })
 ```
 
-***output:***
+***development output:***
 
 ![](https://i.ibb.co/y63BtzS/image.png)
 
-  
+
+***production output:***
+
+```bash
+{
+  "timestamp": "2021-09-30T09:45:01.035Z",
+  "message": "Hi! I'm info log example",
+  "level": "info",
+  "metadata": {}
+}
+{
+  "timestamp": "2021-09-30T09:45:01.035Z",
+  "message": "Hi! I'm warn log example",
+  "level": "warn",
+  "metadata": {}
+}
+{
+  "timestamp": "2021-09-30T09:45:01.035Z",
+  "message": "Hi! I'm error log example",
+  "level": "error",
+  "metadata": {}
+}
+```
+
 ## Environment Variables
 
 `NODE_ENV` production start does not show debug() logs
 
 `LOGARDIAN_LABELS` labels to be logged in the console. For example *LOGARDIAN_LABELS=database,http*
+
+`LOGARDIAN_TRACE` turn off default function callers logs (debug, warn, error)
 
   
 ## FAQ
@@ -89,7 +114,7 @@ logger.log(`User ${user.name} has new transaction`, transaction, { trace: true }
 ```
 ```json
 {
-  "timestamp": "2021-09-24T04:03:27.326Z"
+  "timestamp": "2021-09-24T04:03:27.326Z",
   "level": "info",
   "message": "User Tema has new transaction",
   "metadata": {
@@ -113,7 +138,6 @@ export class CatService {
 }
 ```
 
-
 #### I do not see my logs with label
 
 Specify labels you want to log in *.env* or write `*` to log every log with label. 
@@ -125,7 +149,22 @@ LOGARDIAN_LABELS=http,database # output log with http and database labels
 LOGARDIAN_LABELS=emails,* # output every log with label
 ```
 
-  
+#### I do not want to see caller and path. How can I turn off them globally?
+
+Specify 'false' on LOGARDIAN_TRACE in *.env*. If you specify `trace: true` in logger function trace will log in spite of .env option
+
+```bash
+LOGARDIAN_TRACE=false
+```
+
+Priority of trace from high to low:
+
+1. Production mode
+2. `trace: true` in function config
+3. `LOGARDIAN_TRACE=false` in .env
+
+
+
 ## License
 
 [MIT](https://github.com/i-link-pro-team/logardian/blob/main/LICENSE)

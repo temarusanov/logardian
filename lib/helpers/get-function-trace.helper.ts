@@ -3,6 +3,7 @@ require('dotenv').config()
 
 const CONTEXT_INDEX_IN_STACK = 4
 const isProduction = process.env.NODE_ENV === 'production'
+const isTraceOff = process.env.LOGARDIAN_TRACE === 'false'
 
 interface FunctionTraceInfo {
     caller?: string
@@ -33,12 +34,17 @@ export const getFunctionTrace = (
 
             const context = stacktrace[CONTEXT_INDEX_IN_STACK]
 
-            const [caller, functionPath] = context.split(' (')
+            const [caller, functionTrace] = context.split('(')
 
-            const [path] = functionPath.split(')')
+            if (!functionTrace) {
+                result.path = caller
+                result.caller = `anonymous function`
+            } else {
+                const [path] = functionTrace.split(')')
 
-            result.path = path
-            result.caller = caller
+                result.path = path
+                result.caller = caller
+            }
         }
     }
 
@@ -46,6 +52,10 @@ export const getFunctionTrace = (
 }
 
 export function isTraceEnabledByDefault(level: string): boolean {
+    if (isTraceOff) {
+        return false
+    }
+
     switch (level) {
         case 'warn':
         case 'error':
