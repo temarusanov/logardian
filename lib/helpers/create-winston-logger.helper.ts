@@ -31,10 +31,33 @@ function createWinstonFormat(): Format {
         timestamp(),
         splat(),
         simple(),
-        printf((info) =>
+        printf(({
+            timestamp,
+            message,
+            level,
+            label,
+            trace,
+            caller,
+            path,
+            ...meta }) =>
             isProduction
-                ? createProductionLog(info)
-                : createDevelopmentLog(info),
+                ? createProductionLog({
+                    timestamp,
+                    message,
+                    level,
+                    label,
+                    ...meta
+                })
+                : createDevelopmentLog({
+                    timestamp,
+                    message,
+                    level,
+                    label,
+                    trace,
+                    caller,
+                    path,
+                    ...meta
+                }),
         ),
     )
 }
@@ -47,6 +70,10 @@ function createProductionLog(info: any): string {
         label,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         trace,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        caller,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        path,
         ...meta
     } = info
 
@@ -107,9 +134,8 @@ function getLabel(label: string): string {
 }
 
 function getExecutorValues(caller: string, path: string): string {
-    return `${caller ? `\ncaller ${chalk.gray(`->`)} ${caller}` : ''}${
-        path ? `\npath ${chalk.gray(`->`)} ${path}` : ``
-    }`
+    return `${caller ? `\ncaller ${chalk.gray(`->`)} ${caller}` : ''}${path ? `\npath ${chalk.gray(`->`)} ${path}` : ``
+        }`
 }
 
 function getMeta(meta: any): string {
