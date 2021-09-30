@@ -32,8 +32,6 @@ npm i --save logardian
   
 ## Usage/Examples
 
-
-
 ```ts
 import Logardian from 'logardian'
 
