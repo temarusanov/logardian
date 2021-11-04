@@ -1,7 +1,6 @@
 # Logardian
 
-Logger using Winston to output minimalistic, readable logs.
-
+Inspired by NestJS Logger, Logardian was built to output minimalistic, readable logs.
 
 ## Roadmap
 
@@ -20,7 +19,6 @@ npm i --save logardian
     
 ## Features
 
-- Uses [winston](https://github.com/winstonjs/winston) lib underneath
 - Various layers of logs that can be turned on/off via .env (`LOGARDIAN_LABELS`)
 - In production mode debug() does not work and all logs are sent in json format
 - Datetime in UTC format
@@ -28,6 +26,7 @@ npm i --save logardian
 - In debug mode the path and name of the function that called the log is displayed
 - Can be used instead of NestJS Logger
 - Can log any objects, arrays, variables
+- Colors!
 
   
 ## Usage/Examples
@@ -56,19 +55,22 @@ logger.debug(`Hi! I'm debug log example`, { some: 'object' })
   "timestamp": "2021-09-30T09:45:01.035Z",
   "message": "Hi! I'm info log example",
   "level": "info",
-  "metadata": {}
 }
 {
   "timestamp": "2021-09-30T09:45:01.035Z",
   "message": "Hi! I'm warn log example",
   "level": "warn",
-  "metadata": {}
 }
 {
   "timestamp": "2021-09-30T09:45:01.035Z",
   "message": "Hi! I'm error log example",
   "level": "error",
-  "metadata": {}
+}
+{
+  "timestamp": "2021-09-30T09:45:01.035Z",
+  "message": "Hi! I'm verbose log example",
+  "level": "verbose",
+  "label": "database"
 }
 ```
 
@@ -89,7 +91,7 @@ We made logger based on [LoggerService](https://github.com/nestjs/nest/blob/mast
 
 ```ts
 // main.ts
-import Logardian from 'logardian'
+import { Logardian } from 'logardian'
 
 const logger = new Logardian()
 
@@ -99,29 +101,6 @@ async function bootstrap(): Promise<void> {
     await app.listen(port, hostname, () =>
         logger.log(`Server running at ${hostname}:${port}`),
     )
-}
-```
-
-#### Does production mode include objects that I log?
-
-Yes, logs have 'metadata' field that include all object except 
-*timestamp*, *level*, *label*, *message*.
-
-**Important:** production will never log caller and path fields (trace)
-
-```ts
-logger.log(`User ${user.name} has new transaction`, transaction, { trace: true })
-```
-```json
-{
-  "timestamp": "2021-09-24T04:03:27.326Z",
-  "level": "info",
-  "message": "User Tema has new transaction",
-  "metadata": {
-    "from": "user-name-1",
-    "to": "user-name-2",
-    "amount": "137"
-  },
 }
 ```
 

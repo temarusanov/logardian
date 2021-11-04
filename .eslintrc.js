@@ -4,11 +4,15 @@ module.exports = {
     project: 'tsconfig.json',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint/eslint-plugin'],
+  plugins: [
+    '@typescript-eslint/eslint-plugin',
+    'no-null'
+  ],
   extends: [
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier'
+    'prettier',
+    'prettier/@typescript-eslint',
   ],
   root: true,
   env: {
@@ -25,6 +29,8 @@ module.exports = {
     'no-empty-pattern': "error",
     "no-magic-numbers": "off",
     "no-unused-vars": "off",
+    "no-null/no-null": "error",
+    "object-shorthand": ["error", "always"],
     "semi": "off",
     "space-before-blocks": "error",
     '@typescript-eslint/array-type': 'error',
@@ -100,11 +106,11 @@ module.exports = {
       }
     ],
     "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^(_|type)" }],
-    "@typescript-eslint/return-await": "off",
+    "@typescript-eslint/return-await": ["error", "always"],
     "@typescript-eslint/semi": ["error", "never"],
   },
   "ignorePatterns": [
     ".eslintrc.js",
-    "index.*"
+    '[0-9]*.ts' // not to lint migrations files, example: 152325322-create-db.ts
   ],
 };
