@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/temarusanov/logardian/compare/v1.2.0...v1.3.0) (2021-11-04)
+
+
+### Features
+
+* **refactor:** fully abandon the winston to stdout, using nestjs logger as a base ([2940b2e](https://github.com/temarusanov/logardian/commit/2940b2e280e902cd689908b72257f51ac2991eb9))
+
 # [1.2.0](https://github.com/i-link-pro-team/logardian/compare/v1.1.1...v1.2.0) (2021-09-30)
 
 
