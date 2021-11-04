@@ -115,7 +115,7 @@ export class Logger implements LoggerInterface {
             })
         } else {
             const traceMessage = getFunctionTrace(logLevel, trace)
-            const stackMessage = `${stack}\n` ?? ''
+            const stackMessage = stack ? `${stack}\n` : ''
 
             computedMessage = `${timestamp} ${formattedLogLevel}: ${labelMessage}${output}${traceMessage} ${timestampDiff}\n${stackMessage}`
         }
