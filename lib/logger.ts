@@ -175,7 +175,7 @@ export class Logger implements LoggerInterface {
     }
 
     private _findOptionsAndStack(args: unknown[]): {
-        options?: LoggerOptions
+        options: LoggerOptions
         stack?: string
     } {
         const options = args.find(
@@ -191,6 +191,7 @@ export class Logger implements LoggerInterface {
         if (!options) {
             return {
                 stack,
+                options: {}
             }
         }
 
