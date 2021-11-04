@@ -1,3 +1,17 @@
+# [1.2.0](https://github.com/i-link-pro-team/logardian/compare/v1.1.1...v1.2.0) (2021-09-30)
+
+
+### Bug Fixes
+
+* caller and trace shows in prod mode ([49159ef](https://github.com/i-link-pro-team/logardian/commit/49159ef97766157ba0c20969401e1ee6210cbf58))
+* function caller error ([5f4fa6b](https://github.com/i-link-pro-team/logardian/commit/5f4fa6b36f691b541f706ae286d63a9fa0d0e0f5))
+
+
+### Features
+
+* add docs to prod mode ([aec726b](https://github.com/i-link-pro-team/logardian/commit/aec726bc2b6491f37d74de9d744579aef26212a8))
+* add docs, rebase ([af76aaa](https://github.com/i-link-pro-team/logardian/commit/af76aaa9db47840f95b4a24f3c6581786ee3f640))
+
 ## [1.1.1](https://github.com/i-link-pro-team/logardian/compare/v1.1.0...v1.1.1) (2021-09-24)
 
 
