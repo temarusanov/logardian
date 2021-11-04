@@ -16,6 +16,8 @@ import { parseLabels } from './utils/parse-labels.util'
 const isProduction = process.env.NODE_ENV === 'production'
 const labels = parseLabels()
 
+const JSON_SPACE = 2
+
 export class Logger implements LoggerInterface {
     private static _lastTimestampAt?: number
 
@@ -58,7 +60,7 @@ export class Logger implements LoggerInterface {
         this._printMessage(message, options, 'verbose')
     }
 
-    private getTimestamp(): string {
+    private _getTimestamp(): string {
         const time = new Date().toISOString()
 
         // 2021-09-24T05:10:47.306Z => 2021-09-24 05:10:47
@@ -84,8 +86,7 @@ export class Logger implements LoggerInterface {
                   message,
                   (key, value) =>
                       typeof value === 'bigint' ? value.toString() : value,
-                  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                  2,
+                  JSON_SPACE,
               )}\n`
             : (message as string)
 
@@ -93,7 +94,7 @@ export class Logger implements LoggerInterface {
             return
         }
 
-        const timestamp = this.getTimestamp()
+        const timestamp = this._getTimestamp()
 
         const labelMessage = label
             ? colorizeContext(label, '[' + label + '] ')
@@ -140,8 +141,7 @@ export class Logger implements LoggerInterface {
                               typeof value === 'bigint'
                                   ? value.toString()
                                   : value,
-                          // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                          2,
+                          JSON_SPACE,
                       )
                     : (message as string),
                 level,
@@ -149,7 +149,7 @@ export class Logger implements LoggerInterface {
                 stack,
             },
             null,
-            2,
+            JSON_SPACE,
         )}`
     }
 
