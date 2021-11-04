@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/temarusanov/logardian/compare/v1.3.0...v1.3.1) (2021-11-04)
+
+
+### Bug Fixes
+
+* stack undefined check ([a0a72f5](https://github.com/temarusanov/logardian/commit/a0a72f5c1d9a2f43550b2ebdab741eda7e8bd4c7))
+
 # [1.3.0](https://github.com/temarusanov/logardian/compare/v1.2.0...v1.3.0) (2021-11-04)
 
 
