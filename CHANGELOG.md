@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/temarusanov/logardian/compare/v2.0.0...v2.0.1) (2021-11-05)
+
+
+### Bug Fixes
+
+* function trace off priority ([cb93fee](https://github.com/temarusanov/logardian/commit/cb93feea897a6c4f6e13cb03a2bd7cc17a03a30c))
+
 # [2.0.0](https://github.com/temarusanov/logardian/compare/v1.4.0...v2.0.0) (2021-11-05)
 
 
