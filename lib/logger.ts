@@ -14,6 +14,7 @@ import { getFunctionTrace } from './utils/get-function-trace.util'
 import { parseLabels } from './utils/parse-labels.util'
 
 const isProduction = process.env.NODE_ENV === 'production'
+const isJsonPrint = process.env.LOGARDIAN_JSON === 'true'
 const labels = parseLabels()
 
 const JSON_SPACE = 2
@@ -106,7 +107,7 @@ export class Logger implements LoggerInterface {
 
         let computedMessage = ''
 
-        if (isProduction) {
+        if (isJsonPrint) {
             computedMessage = this._createProductionLog({
                 message,
                 label,
@@ -191,7 +192,7 @@ export class Logger implements LoggerInterface {
         if (!options) {
             return {
                 stack,
-                options: {}
+                options: {},
             }
         }
 
