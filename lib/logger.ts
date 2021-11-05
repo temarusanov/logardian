@@ -253,9 +253,7 @@ export class Logger implements LoggerInterface {
             isTraceEnabled = false
         }
 
-        const result: FunctionTrace = {}
-
-        if (forceEnable) {
+        if (forceEnable !== undefined) {
             isTraceEnabled = forceEnable
         }
 
@@ -269,25 +267,27 @@ export class Logger implements LoggerInterface {
             } catch (error) {
                 const stacktrace = error.stack.split(' at ') as string[]
                 const context = stacktrace[CONTEXT_INDEX_IN_STACK]
-                const [caller, functionTrace] = context.split('(')
+                const [callerFunction, functionTrace] = context.split('(')
+
+                const result: FunctionTrace = {}
 
                 if (!functionTrace) {
-                    result.path = caller
+                    result.path = callerFunction
                     result.caller = `anonymous function`
                 } else {
                     const [path] = functionTrace.split(')')
 
                     result.path = path
-                    result.caller = caller
+                    result.caller = callerFunction
                 }
+
+                const { caller, path } = result
+
+                return `${`\ncaller ${chalk.gray(`->`)} ${caller}`}${`\npath ${chalk.gray(`->`)} ${path}`}`
             }
         }
 
-        const { caller, path } = result
-
-        return `${caller ? `\ncaller ${chalk.gray(`->`)} ${caller}` : ''}${
-            path ? `\npath ${chalk.gray(`->`)} ${path}` : ``
-        }`
+        return ''
     }
 
     private _isTraceEnabledByDefault(level: LogLevel): boolean {
