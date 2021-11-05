@@ -35,6 +35,10 @@ import Logardian from 'logardian'
 
 const logger = new Logardian()
 
+logger.configure({
+    trace: false
+})
+
 logger.log(`Hi! I'm info log example`)
 logger.warn(`Hi! I'm warn log example`, { trace: false })
 logger.error(`Hi! I'm error log example`)
@@ -44,34 +48,43 @@ logger.debug(`Hi! I'm debug log example`, { some: 'object' })
 
 ***default output:***
 
-![](https://i.ibb.co/y63BtzS/image.png)
+![](https://i.ibb.co/0nRH2Yc/photo-2021-11-05-12-52-51.jpg)
 
 
 ***json output:***
 
-Set `LOGARDIAN_JSON=true` in .env
+```ts
+logger.configure({
+    json: true
+})
+```
 
 ```bash
 {
-  "timestamp": "2021-09-30T09:45:01.035Z",
+  "timestamp": "2021-11-05T05:54:10.920Z",
   "message": "Hi! I'm info log example",
-  "level": "info",
+  "level": "log"
 }
 {
-  "timestamp": "2021-09-30T09:45:01.035Z",
+  "timestamp": "2021-11-05T05:54:10.920Z",
   "message": "Hi! I'm warn log example",
-  "level": "warn",
+  "level": "warn"
 }
 {
-  "timestamp": "2021-09-30T09:45:01.035Z",
+  "timestamp": "2021-11-05T05:54:10.920Z",
   "message": "Hi! I'm error log example",
-  "level": "error",
+  "level": "error"
 }
 {
-  "timestamp": "2021-09-30T09:45:01.035Z",
+  "timestamp": "2021-11-05T05:54:10.920Z",
   "message": "Hi! I'm verbose log example",
   "level": "verbose",
   "label": "database"
+}
+{
+  "timestamp": "2021-11-05T05:54:10.920Z",
+  "message": "{\n  \"some\": \"object\"\n}",
+  "level": "debug"
 }
 ```
 
@@ -79,13 +92,6 @@ Set `LOGARDIAN_JSON=true` in .env
 
 `NODE_ENV` production start does not show debug() logs
 
-`LOGARDIAN_LABELS` labels to be logged in the console. For example *LOGARDIAN_LABELS=database,http*
-
-`LOGARDIAN_TRACE` turn off default function callers logs (debug, warn, error)
-
-`LOGARDIAN_JSON` switch log format to json
-
-  
 ## FAQ
 
 #### How does it implement NestJS Logger without any framework libs?
@@ -122,28 +128,32 @@ export class CatService {
 
 #### I do not see my logs with label
 
-Specify labels you want to log in *.env* or write `*` to log every log with label. 
+Specify labels you want to log or write `*` to log every log with label. 
 Working in production and development mode
 
-```bash
-LOGARDIAN_LABELS=* # output every log with label
-LOGARDIAN_LABELS=http,database # output log with http and database labels
-LOGARDIAN_LABELS=emails,* # output every log with label
+Logardian is a singleton, so it means that `configure()` works on all Logardian instances
+
+```ts
+import { Logardian } from 'logardian'
+
+const logger = new Logardian()
+
+logger.configure({
+    labels: '*' // or ['database', 'events'] or false
+    trace: false,
+    json: true
+})
 ```
 
 #### I do not want to see caller and path. How can I turn off them globally?
 
-Specify 'false' on LOGARDIAN_TRACE in *.env*. If you specify `trace: true` in logger function trace will log in spite of .env option
-
-```bash
-LOGARDIAN_TRACE=false
-```
+Specify 'false' on logardian config. If you specify `trace: true` in logger function trace will log in spite of config option
 
 Priority of trace from high to low:
 
 1. Production mode
-2. `trace: true` in function config
-3. `LOGARDIAN_TRACE=false` in .env
+2. `logger.log('Hello', { trace: true })`
+3. `logger.configure({ trace: false })`
 
 
 

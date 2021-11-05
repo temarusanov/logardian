@@ -9,41 +9,39 @@ import { clc } from './utils/cli-colors.util'
 import { isPlainObject } from './utils/utils'
 import { colorizeContext } from './utils/colorize-context.util'
 import * as chalk from 'chalk'
-import { LoggerOptions } from './interfaces/logger-options.interface'
-import { getFunctionTrace } from './utils/get-function-trace.util'
-import { parseLabels } from './utils/parse-labels.util'
+import { LogMethodOptions } from './interfaces/log-method-options.interface'
+import { LoggerConfig } from './interfaces/logger-options.interface'
 
 const isProduction = process.env.NODE_ENV === 'production'
-const isJsonPrint = process.env.LOGARDIAN_JSON === 'true'
-const labels = parseLabels()
 
 const JSON_SPACE = 2
+const CONTEXT_INDEX_IN_STACK = 6
 
 export class Logger implements LoggerInterface {
-    private static _lastTimestampAt?: number
+    _config: LoggerConfig = {}
 
-    log(message: any, options?: LoggerOptions): void
+    log(message: any, options?: LogMethodOptions): void
     log(message: any, ...optionalParams: [...any, string?]): void
     log(message: any, ...optionalParams: any[]): void {
         const options = this._findOptions(optionalParams)
         this._printMessage(message, options, 'log')
     }
 
-    error(message: any, options?: LoggerOptions, stack?: string): void
+    error(message: any, options?: LogMethodOptions, stack?: string): void
     error(message: any, ...optionalParams: [...any, string?, string?]): void
     error(message: any, ...optionalParams: any[]): void {
         const { options, stack } = this._findOptionsAndStack(optionalParams)
         this._printMessage(message, options, 'error', 'stderr', stack)
     }
 
-    warn(message: any, options?: LoggerOptions): void
+    warn(message: any, options?: LogMethodOptions): void
     warn(message: any, ...optionalParams: [...any, string?]): void
     warn(message: any, ...optionalParams: any[]): void {
         const options = this._findOptions(optionalParams)
         this._printMessage(message, options, 'warn')
     }
 
-    debug(message: any, options?: LoggerOptions): void
+    debug(message: any, options?: LogMethodOptions): void
     debug(message: any, ...optionalParams: [...any, string?]): void
     debug(message: any, ...optionalParams: any[]): void {
         if (isProduction) {
@@ -54,7 +52,7 @@ export class Logger implements LoggerInterface {
         this._printMessage(message, options, 'debug')
     }
 
-    verbose(message: any, options?: LoggerOptions): void
+    verbose(message: any, options?: LogMethodOptions): void
     verbose(message: any, ...optionalParams: [...any, string?]): void
     verbose(message: any, ...optionalParams: any[]): void {
         const options = this._findOptions(optionalParams)
@@ -73,58 +71,44 @@ export class Logger implements LoggerInterface {
 
     private _printMessage(
         message: any,
-        options: LoggerOptions,
+        options: LogMethodOptions,
         logLevel: LogLevel,
         writeStreamType?: 'stdout' | 'stderr',
         stack?: string,
     ): void {
-        const color = this._getColorByLogLevel(logLevel)
+        const { label } = options
 
-        const { label, trace } = options
-
-        const output = isPlainObject(message)
-            ? `Object:\n${JSON.stringify(
-                  message,
-                  (key, value) =>
-                      typeof value === 'bigint' ? value.toString() : value,
-                  JSON_SPACE,
-              )}\n`
-            : (message as string)
-
-        if (label && !labels.includes('*') && !labels.includes(label)) {
+        if (label && !this._isLabelAllowed(label)) {
             return
         }
 
-        const timestamp = this._getTimestamp()
-
-        const labelMessage = label
-            ? colorizeContext(label, '[' + label + '] ')
-            : ''
-
-        const timestampDiff = this._updateAndGetTimestampDiff()
-
-        const formattedLogLevel = color(logLevel)
-
         let computedMessage = ''
 
-        if (isJsonPrint) {
-            computedMessage = this._createProductionLog({
+        const { json } = this._config
+
+        if (json) {
+            computedMessage = this._createJsonLog({
                 message,
                 label,
                 level: logLevel,
                 stack,
             })
         } else {
-            const traceMessage = getFunctionTrace(logLevel, trace)
-            const stackMessage = stack ? `${stack}\n` : ''
+            const { trace } = options
 
-            computedMessage = `${timestamp} ${formattedLogLevel}: ${labelMessage}${output}${traceMessage} ${timestampDiff}\n${stackMessage}`
+            computedMessage = this._createDefaultLog({
+                message,
+                label,
+                level: logLevel,
+                stack,
+                trace,
+            })
         }
 
         process[writeStreamType ?? 'stdout'].write(computedMessage)
     }
 
-    private _createProductionLog(data: {
+    private _createJsonLog(data: {
         message: string
         level: string
         label: string
@@ -154,15 +138,41 @@ export class Logger implements LoggerInterface {
         )}`
     }
 
-    private _updateAndGetTimestampDiff(): string {
-        const currentDate = Date.now()
+    private _createDefaultLog(data: {
+        message: string
+        level: LogLevel
+        label: string
+        stack?: string
+        trace?: boolean
+    }): string {
+        const { message, level, label, stack, trace } = data
 
-        Logger._lastTimestampAt = currentDate
+        const color = this._getColorByLogLevel(level)
 
-        return yellow(`+${currentDate - Logger._lastTimestampAt}ms`)
+        const output = isPlainObject(message)
+            ? `Object:\n${JSON.stringify(
+                  message,
+                  (key, value) =>
+                      typeof value === 'bigint' ? value.toString() : value,
+                  JSON_SPACE,
+              )}\n`
+            : (message as string)
+
+        const timestamp = this._getTimestamp()
+
+        const labelMessage = label
+            ? colorizeContext(label, '[' + label + '] ')
+            : ''
+
+        const formattedLogLevel = color(level)
+
+        const traceMessage = this._getFunctionTrace(level, trace)
+        const stackMessage = stack ? `${stack}\n` : ''
+
+        return `${timestamp} ${formattedLogLevel}: ${labelMessage}${output}${traceMessage}\n${stackMessage}`
     }
 
-    private _findOptions(args: unknown[]): LoggerOptions {
+    private _findOptions(args: unknown[]): LogMethodOptions {
         const options = args.find(
             (arg) =>
                 typeof arg === 'object' && ('trace' in arg || 'label' in arg),
@@ -176,13 +186,13 @@ export class Logger implements LoggerInterface {
     }
 
     private _findOptionsAndStack(args: unknown[]): {
-        options: LoggerOptions
+        options: LogMethodOptions
         stack?: string
     } {
         const options = args.find(
             (arg) =>
                 typeof arg === 'object' && ('trace' in arg || 'label' in arg),
-        ) as LoggerOptions
+        ) as LogMethodOptions
 
         const stack =
             typeof args[args.length - 1] === 'string'
@@ -199,6 +209,98 @@ export class Logger implements LoggerInterface {
         return {
             options,
             stack,
+        }
+    }
+
+    private _isLabelAllowed(label: string): boolean {
+        const { labels } = this._config
+
+        if (labels === undefined) {
+            return true
+        }
+
+        if (labels === false) {
+            return false
+        }
+
+        if (labels.constructor.name === 'Array') {
+            if (labels.includes('*')) {
+                return true
+            }
+
+            if (labels.includes(label)) {
+                return true
+            }
+        }
+
+        if (typeof labels === 'string') {
+            if (labels.indexOf('*') > -1) {
+                return true
+            }
+
+            if (labels === label) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    private _getFunctionTrace(level: LogLevel, forceEnable?: boolean): string {
+        let isTraceEnabled = this._isTraceEnabledByDefault(level)
+
+        if (this._config.trace === false) {
+            isTraceEnabled = false
+        }
+
+        const result: FunctionTrace = {}
+
+        if (forceEnable) {
+            isTraceEnabled = forceEnable
+        }
+
+        if (isProduction) {
+            isTraceEnabled = false
+        }
+
+        if (isTraceEnabled) {
+            try {
+                throw new Error()
+            } catch (error) {
+                const stacktrace = error.stack.split(' at ') as string[]
+                const context = stacktrace[CONTEXT_INDEX_IN_STACK]
+                const [caller, functionTrace] = context.split('(')
+
+                if (!functionTrace) {
+                    result.path = caller
+                    result.caller = `anonymous function`
+                } else {
+                    const [path] = functionTrace.split(')')
+
+                    result.path = path
+                    result.caller = caller
+                }
+            }
+        }
+
+        const { caller, path } = result
+
+        return `${caller ? `\ncaller ${chalk.gray(`->`)} ${caller}` : ''}${
+            path ? `\npath ${chalk.gray(`->`)} ${path}` : ``
+        }`
+    }
+
+    private _isTraceEnabledByDefault(level: LogLevel): boolean {
+        switch (level) {
+            case 'warn':
+            case 'error':
+                return !isProduction
+
+            case 'debug':
+                return true
+
+            default:
+                return false
         }
     }
 
