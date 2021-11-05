@@ -1,3 +1,18 @@
+# [2.0.0](https://github.com/temarusanov/logardian/compare/v1.4.0...v2.0.0) (2021-11-05)
+
+
+* Merge pull request #27 from temarusanov/feat/improvements ([ad409e7](https://github.com/temarusanov/logardian/commit/ad409e7674fccf17ff47c4450e4e71d99c0cf6b3)), closes [#27](https://github.com/temarusanov/logardian/issues/27)
+
+
+### Features
+
+* **refactor:** migrate from .env settings to incode config ([8930e4f](https://github.com/temarusanov/logardian/commit/8930e4f3844987e9cd6a183a47b70f04f09bf6fc))
+
+
+### BREAKING CHANGES
+
+* .env config will not work in this version
+
 # [1.4.0](https://github.com/temarusanov/logardian/compare/v1.3.2...v1.4.0) (2021-11-05)
 
 
