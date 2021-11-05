@@ -4,8 +4,6 @@ Inspired by NestJS Logger, Logardian was built to output minimalistic, readable 
 
 ## Roadmap
 
-- Logstash support
-
 - Logging to file
 
   
@@ -20,12 +18,13 @@ npm i --save logardian
 ## Features
 
 - Various layers of logs that can be turned on/off via .env (`LOGARDIAN_LABELS`)
-- In production mode debug() does not work and all logs are sent in json format
+- In production mode debug() does not work
 - Datetime in UTC format
 - Format of logs: `[time] [level] [layer] [message]`
 - In debug mode the path and name of the function that called the log is displayed
 - Can be used instead of NestJS Logger
 - Can log any objects, arrays, variables
+- Modes: normal or json format output
 - Colors!
 
   
@@ -43,12 +42,14 @@ logger.verbose(`Hi! I'm verbose log example`, { label: 'database' })
 logger.debug(`Hi! I'm debug log example`, { some: 'object' })
 ```
 
-***development output:***
+***default output:***
 
 ![](https://i.ibb.co/y63BtzS/image.png)
 
 
-***production output:***
+***json output:***
+
+Set `LOGARDIAN_JSON=true` in .env
 
 ```bash
 {
@@ -82,12 +83,14 @@ logger.debug(`Hi! I'm debug log example`, { some: 'object' })
 
 `LOGARDIAN_TRACE` turn off default function callers logs (debug, warn, error)
 
+`LOGARDIAN_JSON` switch log format to json
+
   
 ## FAQ
 
 #### How does it implement NestJS Logger without any framework libs?
 
-We made logger based on [LoggerService](https://github.com/nestjs/nest/blob/master/packages/common/services/logger.service.ts) but we don't explicitly implement so that we stay dependless of NestJS libraries. But you can also use the Logardian instead of common NestJS logger.
+We made logger based on [LoggerService](https://github.com/nestjs/nest/blob/master/packages/common/services/logger.service.ts) but we don't explicitly import it so that we stay dependless of NestJS libraries. But you can also use the Logardian instead of common NestJS logger.
 
 ```ts
 // main.ts
@@ -109,7 +112,7 @@ async function bootstrap(): Promise<void> {
 Simply create a new logger class
 
 ```ts
-import Logardian from 'logardian'
+import { Logardian } from 'logardian'
 
 @Injectable()
 export class CatService {
