@@ -194,10 +194,11 @@ export class Logger implements LoggerInterface {
                 typeof arg === 'object' && ('trace' in arg || 'label' in arg),
         ) as LogMethodOptions
 
-        const stack =
-            typeof args[args.length - 1] === 'string'
-                ? (args.pop() as string)
-                : undefined
+        const stacktraceRegex = new RegExp(/at /g)
+
+        const stack = args.find(
+            (arg) => typeof arg === 'string' && stacktraceRegex.test(arg),
+        ) as string
 
         if (!options) {
             return {
@@ -283,7 +284,9 @@ export class Logger implements LoggerInterface {
 
                 const { caller, path } = result
 
-                return `${`\ncaller ${chalk.gray(`->`)} ${caller}`}${`\npath ${chalk.gray(`->`)} ${path}`}`
+                return `${`\ncaller ${chalk.gray(
+                    `->`,
+                )} ${caller}`}${`\npath ${chalk.gray(`->`)} ${path}`}`
             }
         }
 
