@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type LogLevel = 'log' | 'error' | 'warn' | 'debug' | 'verbose'
+export type LogLevel = 'log' | 'error' | 'warn' | 'debug' | 'verbose' | 'timer'
 
 /**
  * Logger interface from NestJS

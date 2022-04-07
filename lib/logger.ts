@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 require('dotenv').config()
-import { yellow } from 'chalk'
+import { performance } from 'perf_hooks'
 import { LoggerInterface, LogLevel } from './interfaces/logger.interface'
 import { clc } from './utils/cli-colors.util'
 import { isPlainObject } from './utils/utils'
@@ -19,6 +19,7 @@ const CONTEXT_INDEX_IN_STACK = 6
 
 export class Logger implements LoggerInterface {
     _config: LoggerConfig = {}
+    _timers: Map<string, number> = new Map()
 
     log(message: any, options?: LogMethodOptions): void
     log(message: any, ...optionalParams: [...any, string?]): void
@@ -57,6 +58,25 @@ export class Logger implements LoggerInterface {
     verbose(message: any, ...optionalParams: any[]): void {
         const options = this._findOptions(optionalParams)
         this._printMessage(message, options, 'verbose')
+    }
+
+    markTime(marker: string): void {
+        this._timers.set(marker, performance.now())
+    }
+
+    measureTime(marker: string, message?: string, options?: LogMethodOptions): number {
+        const timeStart = this._timers.get(marker)
+
+        const time = performance.now() - timeStart
+
+        if (message) {
+            const formattedMessage = message.replace(RegExp('{n}'), `${time.toFixed(3)}`)
+
+            const foundOptions = this._findOptions([options])
+            this._printMessage(formattedMessage, foundOptions, 'timer')
+        }
+
+        return time
     }
 
     private _getTimestamp(): string {
@@ -317,6 +337,8 @@ export class Logger implements LoggerInterface {
                 return clc.red
             case 'verbose':
                 return clc.cyanBright
+            case 'timer':
+                return clc.lightGreen
             default:
                 return clc.green
         }
