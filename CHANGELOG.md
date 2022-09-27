@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/temarusanov/logardian/compare/v2.0.2...v2.1.0) (2022-09-27)
+
+
+### Features
+
+* add timer feature ([0b70818](https://github.com/temarusanov/logardian/commit/0b7081884fcb43b79184d27018ff7ef0cc14a87e))
+
 ## [2.0.2](https://github.com/temarusanov/logardian/compare/v2.0.1...v2.0.2) (2021-12-17)
 
 
