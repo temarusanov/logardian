@@ -18,4 +18,13 @@ export interface LoggerConfig {
      * Use async hooks to trace your logs
      */
     traceId?: boolean
+
+    colors?: {
+        timestamp?: string
+        traceId?: string
+        label?: string
+        message?: string
+        trace?: string
+        stack?: string
+    }
 }

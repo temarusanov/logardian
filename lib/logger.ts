@@ -17,11 +17,18 @@ const JSON_SPACE = 2
 const CONTEXT_INDEX_IN_STACK = 6
 
 export class Logger implements LoggerInterface {
-    _config: LoggerConfig = {
-        traceId: true,
-    }
     private _timers: Map<string, number> = new Map()
     private _asyncStorage = new AsyncStorage()
+
+    _config: LoggerConfig = {
+        traceId: true,
+        trace: false,
+        colors: {
+            timestamp: '#E5E5E5',
+            traceId: '#E5E5E5',
+            label: '#E5E5E5',
+        },
+    }
 
     log(message: any, options?: LogMethodOptions): void
     log(message: any, ...optionalParams: [...any, string?]): void
@@ -96,10 +103,7 @@ export class Logger implements LoggerInterface {
         const time = new Date().toISOString()
 
         // 2021-09-24T05:10:47.306Z => 2021-09-24 05:10:47
-        return `${chalk.cyan(
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-            `[${`${time.substr(0, 10)} ${time.substr(11, 12)}`}]`,
-        )}`
+        return `[${`${time.substr(0, 10)} ${time.substr(11, 12)}`}]`
     }
 
     private _printMessage(
@@ -164,33 +168,51 @@ export class Logger implements LoggerInterface {
 
     private _createDefaultLog(data: DefaultLog): string {
         const { message, level, label, stack, trace } = data
+        const { colors } = this._config
 
         const color = this._getColorByLogLevel(level)
 
         const output = isPlainObject(message)
-            ? `Object:\n${JSON.stringify(
+            ? ` Object:\n${JSON.stringify(
                   message,
                   (key, value) =>
                       typeof value === 'bigint' ? value.toString() : value,
                   JSON_SPACE,
-              )}\n`
-            : (message as string)
+              )}`
+            : ` ${message as string}`
 
         const timestamp = this._getTimestamp()
         const traceId = this._config.traceId
-            ? ` ${chalk.gray(`[${this._asyncStorage.getTraceId()}]`)}`
+            ? ` [${this._asyncStorage.getTraceId()}]`
             : ''
 
-        const labelMessage = label
-            ? colorizeContext(label, '[' + label + '] ')
-            : ''
+        const labelMessage = label ? ' [' + label + ']' : ''
 
-        const formattedLogLevel = color(level)
-
+        const formattedLogLevel = color(level.toUpperCase().padStart(8))
         const traceMessage = this._getFunctionTrace(level, trace)
-        const stackMessage = stack ? `${stack}\n` : ''
+        const stackMessage = stack ? `\n${stack}` : ''
 
-        return `${timestamp}${traceId} ${formattedLogLevel}: ${labelMessage}${output}${traceMessage}\n${stackMessage}`
+        const coloredOutput = colors.message
+            ? chalk.hex(colors.message)(output)
+            : output
+        const coloredTrace = colors.trace
+            ? chalk.hex(colors.trace)(traceMessage)
+            : traceMessage
+        const coloredStack = colors.stack
+            ? chalk.hex(colors.stack)(stackMessage)
+            : stackMessage
+
+        const finalMessage =
+            chalk.hex(colors.timestamp)(timestamp) +
+            chalk.hex(colors.traceId)(traceId) +
+            formattedLogLevel +
+            chalk.hex(colors.label)(labelMessage) +
+            coloredOutput +
+            coloredTrace +
+            coloredStack +
+            '\n'
+
+        return finalMessage
     }
 
     private _findOptions(args: unknown[]): LogMethodOptions {

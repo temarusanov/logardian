@@ -1,4 +1,4 @@
-import { LogLevel } from "./logger.interface"
+import { LogLevel } from './logger.interface'
 
 export interface DefaultLog {
     message: string
