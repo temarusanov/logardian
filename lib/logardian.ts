@@ -55,7 +55,7 @@ export class Logardian {
 
     /**
      * Set a marker for time calculation
-     * 
+     *
      * @param marker Marker name
      */
     markTime(marker: string): void {
@@ -64,25 +64,38 @@ export class Logardian {
 
     /**
      * Measure time that was marked by `markTime()`. Provide message if you want to log your time
-     * 
+     *
      * Example:
      * ```ts
      * logger.markTime('marker')
-     * 
+     *
      * // will return time result
      * const time = logger.measureTime('marker')
-     * 
+     *
      * // will log message in the console and return time result
      * logger.measureTime('marker', 'Function took {n} to be executed', { label: 'auth' })
      * ```
-     * 
+     *
      * @param marker marker name
      * @param message use {n} to paste time result
      * @param options logger options
-     * 
+     *
      * @returns timer result in milliseconds
      */
-    measureTime(marker: string, message?: string, options?: LogMethodOptions): number {
+    measureTime(
+        marker: string,
+        message?: string,
+        options?: LogMethodOptions,
+    ): number {
         return this._instance.measureTime(marker, message, options)
+    }
+
+    /**
+     * Create your specific trace id for each stream
+     *
+     * @param traceId any string value
+     */
+    createTraceId(traceId: string): void {
+        return this._instance.createTraceId(traceId)
     }
 }

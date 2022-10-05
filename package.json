@@ -30,9 +30,10 @@
     "CHANGELOG.md"
   ],
   "dependencies": {
-    "chalk": "^4.1.2",
-    "dotenv": "^16.0.3",
-    "winston": "^3.8.2"
+    "chalk": "4.1.2",
+    "dotenv": "16.0.3",
+    "nanoid": "3.0.0",
+    "winston": "3.8.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
