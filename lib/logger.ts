@@ -146,15 +146,12 @@ export class Logger implements LoggerInterface {
                               typeof value === 'bigint'
                                   ? value.toString()
                                   : value,
-                          JSON_SPACE,
                       )
                     : (message as string),
                 level,
                 label,
                 stack,
             },
-            null,
-            JSON_SPACE,
         )}`
     }
 
