@@ -66,7 +66,7 @@ logger.configure({
 {"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm warn log example","level":"warn"}
 {"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm error log example","level":"error"}
 {"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm verbose log example","level":"verbose","label":"database"}
-{"timestamp":"2021-11-05T05:54:10.920Z","message":"{\n  \"some\": \"object\"\n}","level":"debug"}
+{"timestamp":"2021-11-05T05:54:10.920Z","message":"{\n\"some\":\"object\"\n}","level":"debug"}
 ```
 
 ### Async hook storage
