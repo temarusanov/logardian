@@ -11,6 +11,7 @@ import { colorizeContext } from './utils/colorize-context.util'
 import * as chalk from 'chalk'
 import { LogMethodOptions } from './interfaces/log-method-options.interface'
 import { LoggerConfig } from './interfaces/logger-options.interface'
+import { AsyncStorage } from './async-storage'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -18,8 +19,11 @@ const JSON_SPACE = 2
 const CONTEXT_INDEX_IN_STACK = 6
 
 export class Logger implements LoggerInterface {
-    _config: LoggerConfig = {}
-    _timers: Map<string, number> = new Map()
+    _config: LoggerConfig = {
+        traceId: true,
+    }
+    private _timers: Map<string, number> = new Map()
+    private _asyncStorage = new AsyncStorage()
 
     log(message: any, options?: LogMethodOptions): void
     log(message: any, ...optionalParams: [...any, string?]): void
@@ -64,19 +68,30 @@ export class Logger implements LoggerInterface {
         this._timers.set(marker, performance.now())
     }
 
-    measureTime(marker: string, message?: string, options?: LogMethodOptions): number {
+    measureTime(
+        marker: string,
+        message?: string,
+        options?: LogMethodOptions,
+    ): number {
         const timeStart = this._timers.get(marker)
 
         const time = performance.now() - timeStart
 
         if (message) {
-            const formattedMessage = message.replace(RegExp('{n}'), `${time.toFixed(3)}`)
+            const formattedMessage = message.replace(
+                RegExp('{n}'),
+                `${time.toFixed(3)}`,
+            )
 
             const foundOptions = this._findOptions([options])
             this._printMessage(formattedMessage, foundOptions, 'timer')
         }
 
         return time
+    }
+
+    createTraceId(traceId: string): void {
+        this._asyncStorage.createTraceId(traceId)
     }
 
     private _getTimestamp(): string {
@@ -104,7 +119,7 @@ export class Logger implements LoggerInterface {
 
         let computedMessage = ''
 
-        const { json } = this._config
+        const { json, traceId } = this._config
 
         if (json) {
             computedMessage = this._createJsonLog({
@@ -112,6 +127,7 @@ export class Logger implements LoggerInterface {
                 label,
                 level: logLevel,
                 stack,
+                isTraceIdEnabled: traceId,
             })
         } else {
             const { trace } = options
@@ -122,6 +138,7 @@ export class Logger implements LoggerInterface {
                 level: logLevel,
                 stack,
                 trace,
+                isTraceIdEnabled: traceId,
             })
         }
 
@@ -133,29 +150,26 @@ export class Logger implements LoggerInterface {
         level: string
         label: string
         stack?: string
+        isTraceIdEnabled?: boolean
     }): string {
-        const { message, level, label, stack } = data
+        const { message, level, label, stack, isTraceIdEnabled } = data
 
-        return `\n${JSON.stringify(
-            {
-                timestamp: new Date().toISOString(),
-                message: isPlainObject(message)
-                    ? JSON.stringify(
-                          message,
-                          (key, value) =>
-                              typeof value === 'bigint'
-                                  ? value.toString()
-                                  : value,
-                          JSON_SPACE,
-                      )
-                    : (message as string),
-                level,
-                label,
-                stack,
-            },
-            null,
-            JSON_SPACE,
-        )}`
+        const traceId = isTraceIdEnabled
+            ? this._asyncStorage.getTraceId()
+            : undefined
+
+        return `\n${JSON.stringify({
+            timestamp: new Date().toISOString(),
+            message: isPlainObject(message)
+                ? JSON.stringify(message, (key, value) =>
+                      typeof value === 'bigint' ? value.toString() : value,
+                  )
+                : (message as string),
+            level,
+            label,
+            stack,
+            traceId,
+        })}`
     }
 
     private _createDefaultLog(data: {
@@ -164,8 +178,9 @@ export class Logger implements LoggerInterface {
         label: string
         stack?: string
         trace?: boolean
+        isTraceIdEnabled?: boolean
     }): string {
-        const { message, level, label, stack, trace } = data
+        const { message, level, label, stack, trace, isTraceIdEnabled } = data
 
         const color = this._getColorByLogLevel(level)
 
@@ -179,6 +194,9 @@ export class Logger implements LoggerInterface {
             : (message as string)
 
         const timestamp = this._getTimestamp()
+        const traceId = isTraceIdEnabled
+            ? ` ${chalk.gray(`[${this._asyncStorage.getTraceId()}]`)}`
+            : ''
 
         const labelMessage = label
             ? colorizeContext(label, '[' + label + '] ')
@@ -189,7 +207,7 @@ export class Logger implements LoggerInterface {
         const traceMessage = this._getFunctionTrace(level, trace)
         const stackMessage = stack ? `${stack}\n` : ''
 
-        return `${timestamp} ${formattedLogLevel}: ${labelMessage}${output}${traceMessage}\n${stackMessage}`
+        return `${timestamp}${traceId} ${formattedLogLevel}: ${labelMessage}${output}${traceMessage}\n${stackMessage}`
     }
 
     private _findOptions(args: unknown[]): LogMethodOptions {

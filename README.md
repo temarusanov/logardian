@@ -4,12 +4,13 @@ Inspired by NestJS Logger, Logardian was built to output minimalistic, readable 
 
 ## Roadmap
 
-- Logging to file
+- [x] Async hooks
+- [x] NodeJS v16.17.1
+- [ ] Logging to file
 
-  
 ## Installation
 
-Requires node version >=12.х
+> Note: Logardian with version 3.0.0 or higher requires NodeJS 16+ because of async hooks. If you don't want them downgrade to version 2.1.0
 
 ```bash
 npm i --save logardian
@@ -17,7 +18,7 @@ npm i --save logardian
     
 ## Features
 
-- Various layers of logs that can be turned on/off via .env (`LOGARDIAN_LABELS`)
+- Various layers of logs that can be turned on/off via config
 - In production mode debug() does not work
 - Datetime in UTC format
 - Format of logs: `[time] [level] [layer] [message]`
@@ -25,6 +26,7 @@ npm i --save logardian
 - Can be used instead of NestJS Logger
 - Can log any objects, arrays, variables
 - Modes: normal or json format output
+- Async hook storage for trace ID
 - Colors!
 
   
@@ -46,12 +48,12 @@ logger.verbose(`Hi! I'm verbose log example`, { label: 'database' })
 logger.debug(`Hi! I'm debug log example`, { some: 'object' })
 ```
 
-***default output:***
+### Default output
 
-![](https://i.ibb.co/0nRH2Yc/photo-2021-11-05-12-52-51.jpg)
+![](./images/logs.png)
 
 
-***json output:***
+### Json output
 
 ```ts
 logger.configure({
@@ -60,32 +62,36 @@ logger.configure({
 ```
 
 ```bash
-{
-  "timestamp": "2021-11-05T05:54:10.920Z",
-  "message": "Hi! I'm info log example",
-  "level": "log"
-}
-{
-  "timestamp": "2021-11-05T05:54:10.920Z",
-  "message": "Hi! I'm warn log example",
-  "level": "warn"
-}
-{
-  "timestamp": "2021-11-05T05:54:10.920Z",
-  "message": "Hi! I'm error log example",
-  "level": "error"
-}
-{
-  "timestamp": "2021-11-05T05:54:10.920Z",
-  "message": "Hi! I'm verbose log example",
-  "level": "verbose",
-  "label": "database"
-}
-{
-  "timestamp": "2021-11-05T05:54:10.920Z",
-  "message": "{\n  \"some\": \"object\"\n}",
-  "level": "debug"
-}
+{"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm info log example","level":"log"}
+{"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm warn log example","level":"warn"}
+{"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm error log example","level":"error"}
+{"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm verbose log example","level":"verbose","label":"database"}
+{"timestamp":"2021-11-05T05:54:10.920Z","message":"{\n\"some\":\"object\"\n}","level":"debug"}
+```
+
+### Async hook storage
+
+Use async hooks to group your logs in one stream. Works out of the box! You can turn them off in the `configure()` function
+
+```ts
+// your create user logic
+
+logger.log('User has been created')
+// [2022-10-05 11:34:41.621] [6f952d18bbf9] log: User has been created
+//                                    ^ unique trace id
+
+// your send email for user logic here
+
+logger.log('Email for user was sent')
+// [2022-10-05 11:34:47.317] [6f952d18bbf9] log: Mail for user was sent
+//                                    ^ same trace id
+```
+
+Or provide your own trace ID
+
+```ts
+logger.createTraceId('my-super-trace-id')
+// [2022-10-05 11:34:47.317] [my-super-trace-id] log: Mail for user was sent
 ```
 
 ## Environment Variables
@@ -139,9 +145,10 @@ import { Logardian } from 'logardian'
 const logger = new Logardian()
 
 logger.configure({
-    labels: '*' // or ['database', 'events'] or false
+    labels: '*', // or ['database', 'events'] or false
     trace: false,
-    json: true
+    json: true,
+    traceId: true
 })
 ```
 
