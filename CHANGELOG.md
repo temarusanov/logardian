@@ -1,3 +1,17 @@
+# [3.0.0](https://github.com/temarusanov/logardian/compare/v2.1.0...v3.0.0) (2022-10-05)
+
+
+### Features
+
+* add async hooks and trace id ([b0be1ca](https://github.com/temarusanov/logardian/commit/b0be1ca4c6d2a51fd4273776e4d68db5cb226810))
+* remove json log space indentation ([eb8e5e8](https://github.com/temarusanov/logardian/commit/eb8e5e82daeb9181c6aea99cc2721cf4bbe3c990))
+* update deps ([a2cd79f](https://github.com/temarusanov/logardian/commit/a2cd79fa6b8bab17fefd1d80140550f485309a2b))
+
+
+### BREAKING CHANGES
+
+* move to nodejs 16.17.1
+
 # [2.1.0](https://github.com/temarusanov/logardian/compare/v2.0.2...v2.1.0) (2022-09-27)
 
 
