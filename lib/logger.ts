@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-require-imports */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 require('dotenv').config()
 import { performance } from 'perf_hooks'
 import { LoggerInterface, LogLevel } from './interfaces/logger.interface'
@@ -12,6 +8,8 @@ import * as chalk from 'chalk'
 import { LogMethodOptions } from './interfaces/log-method-options.interface'
 import { LoggerConfig } from './interfaces/logger-options.interface'
 import { AsyncStorage } from './async-storage'
+import { JsonLog } from './interfaces/json-log.interface'
+import { DefaultLog } from './interfaces/default-log.interface'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -119,7 +117,7 @@ export class Logger implements LoggerInterface {
 
         let computedMessage = ''
 
-        const { json, traceId } = this._config
+        const { json } = this._config
 
         if (json) {
             computedMessage = this._createJsonLog({
@@ -127,7 +125,6 @@ export class Logger implements LoggerInterface {
                 label,
                 level: logLevel,
                 stack,
-                isTraceIdEnabled: traceId,
             })
         } else {
             const { trace } = options
@@ -138,23 +135,16 @@ export class Logger implements LoggerInterface {
                 level: logLevel,
                 stack,
                 trace,
-                isTraceIdEnabled: traceId,
             })
         }
 
         process[writeStreamType ?? 'stdout'].write(computedMessage)
     }
 
-    private _createJsonLog(data: {
-        message: string
-        level: string
-        label: string
-        stack?: string
-        isTraceIdEnabled?: boolean
-    }): string {
-        const { message, level, label, stack, isTraceIdEnabled } = data
+    private _createJsonLog(data: JsonLog): string {
+        const { message, level, label, stack } = data
 
-        const traceId = isTraceIdEnabled
+        const traceId = this._config.traceId
             ? this._asyncStorage.getTraceId()
             : undefined
 
@@ -172,15 +162,8 @@ export class Logger implements LoggerInterface {
         })}`
     }
 
-    private _createDefaultLog(data: {
-        message: string
-        level: LogLevel
-        label: string
-        stack?: string
-        trace?: boolean
-        isTraceIdEnabled?: boolean
-    }): string {
-        const { message, level, label, stack, trace, isTraceIdEnabled } = data
+    private _createDefaultLog(data: DefaultLog): string {
+        const { message, level, label, stack, trace } = data
 
         const color = this._getColorByLogLevel(level)
 
@@ -194,7 +177,7 @@ export class Logger implements LoggerInterface {
             : (message as string)
 
         const timestamp = this._getTimestamp()
-        const traceId = isTraceIdEnabled
+        const traceId = this._config.traceId
             ? ` ${chalk.gray(`[${this._asyncStorage.getTraceId()}]`)}`
             : ''
 
