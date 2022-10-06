@@ -3,7 +3,7 @@ import { performance } from 'perf_hooks'
 import { LoggerInterface, LogLevel } from './interfaces/logger.interface'
 import { clc } from './utils/cli-colors.util'
 import { isPlainObject } from './utils/utils'
-import { colorizeContext } from './utils/colorize-context.util'
+import { isMatch } from 'micromatch'
 import * as chalk from 'chalk'
 import { LogMethodOptions } from './interfaces/log-method-options.interface'
 import { LoggerConfig } from './interfaces/logger-options.interface'
@@ -21,6 +21,7 @@ export class Logger implements LoggerInterface {
     private _asyncStorage = new AsyncStorage()
 
     _config: LoggerConfig = {
+        labels: ['*'],
         traceId: true,
         trace: false,
         colors: {
@@ -267,27 +268,7 @@ export class Logger implements LoggerInterface {
             return false
         }
 
-        if (labels.constructor.name === 'Array') {
-            if (labels.includes('*')) {
-                return true
-            }
-
-            if (labels.includes(label)) {
-                return true
-            }
-        }
-
-        if (typeof labels === 'string') {
-            if (labels.indexOf('*') > -1) {
-                return true
-            }
-
-            if (labels === label) {
-                return true
-            }
-        }
-
-        return false
+        return isMatch(label, labels)
     }
 
     private _getFunctionTrace(level: LogLevel, forceEnable?: boolean): string {
