@@ -1,3 +1,11 @@
+# [3.1.0](https://github.com/temarusanov/logardian/compare/v3.0.0...v3.1.0) (2022-10-06)
+
+
+### Features
+
+* add color config, redesign logs ([a7ddf62](https://github.com/temarusanov/logardian/commit/a7ddf626f59fe1510751db1d2ce55d0dec41d719))
+* add glob pattern for labels ([bd5ba00](https://github.com/temarusanov/logardian/commit/bd5ba00b05b51ed7891c72de2c54caca353f844e))
+
 # [3.0.0](https://github.com/temarusanov/logardian/compare/v2.1.0...v3.0.0) (2022-10-05)
 
 
