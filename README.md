@@ -69,6 +69,26 @@ logger.configure({
 {"timestamp":"2021-11-05T05:54:10.920Z","message":"{\n\"some\":\"object\"\n}","level":"debug"}
 ```
 
+### Labels
+
+Labels now support glob patterns! You can dynamically enable and disable the logs you need via `logger.configure()`. For example:
+
+```ts
+import { Logardian } from 'logardian'
+
+const logger = new Logardian()
+
+logger.configure({
+    labels: ['users.*']
+})
+
+logger.log('User sent mail', { label: 'users.email' }) // will log
+logger.log('User registered', { label: 'users.auth.registration' }) // will log
+logger.log('User authorized', { label: 'users.auth.authorization' }) // will log
+logger.log('Database connected', { label: 'database' }) // will NOT log
+logger.log('User entity created', { label: 'database.users' }) // will NOT log
+```
+
 ### Async hook storage
 
 Use async hooks to group your logs in one stream. Works out of the box! You can turn them off in the `configure()` function
