@@ -3,9 +3,11 @@
 import { LogMethodOptions } from './interfaces/log-method-options.interface'
 import { LoggerConfig } from './interfaces/logger-options.interface'
 import { Logger } from './logger'
+import { mergeDeep } from './utils/utils'
 
 export class Logardian {
     private static _instance: Logger
+    private hexReg = /^#([0-9a-f]{3}){1,2}$/i
 
     private get _instance(): Logger {
         if (!Logardian._instance) {
@@ -20,7 +22,7 @@ export class Logardian {
             return
         }
 
-        this._instance._config = config
+        this._instance._config = mergeDeep(this._instance._config, config)
     }
 
     log(message: any, options?: LogMethodOptions): void

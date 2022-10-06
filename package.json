@@ -13,12 +13,7 @@
   "scripts": {
     "prepare": "tsc",
     "format": "prettier --write \"lib/**/*.ts\"",
-    "lint": "eslint \"{lib,test}/**/*.ts\" --fix",
-    "lint:ts": "eslint \"{lib,test}/**/*.ts\" --fix --plugin tsc --rule \"tsc/config: [2, {configFile: \"./tsconfig.json\"}]\"",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "semantic-release": "semantic-release"
   },
   "publishConfig": {
@@ -32,6 +27,7 @@
   "dependencies": {
     "chalk": "4.1.2",
     "dotenv": "16.0.3",
+    "micromatch": "4.0.5",
     "nanoid": "3.0.0",
     "winston": "3.8.2"
   },
@@ -44,13 +40,8 @@
     "@semantic-release/github": "^8.0.6",
     "@semantic-release/npm": "^9.0.1",
     "@semantic-release/release-notes-generator": "^10.0.3",
+    "@types/micromatch": "^4.0.2",
     "@types/node": "^18.8.2",
-    "@typescript-eslint/eslint-plugin": "^5.39.0",
-    "@typescript-eslint/parser": "^5.39.0",
-    "eslint": "^8.24.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-tsc": "^2.0.0",
     "prettier": "^2.7.1",
     "pretty-quick": "^3.1.3",
     "semantic-release": "^19.0.5",
