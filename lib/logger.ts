@@ -100,6 +100,10 @@ export class Logger implements LoggerInterface {
         this._asyncStorage.createTraceId(traceId)
     }
 
+    getTraceId(): string {
+        return this._asyncStorage.getTraceId()
+    }
+
     private _getTimestamp(): string {
         const time = new Date().toISOString()
 
