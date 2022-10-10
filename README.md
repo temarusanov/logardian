@@ -114,6 +114,25 @@ logger.createTraceId('my-super-trace-id')
 // [2022-10-05 11:34:47.317] [my-super-trace-id] log: Mail for user was sent
 ```
 
+### Colors
+
+If you don't like the set of colors logardian provides you can change them in `configure()` function.
+
+```ts
+const logger = new Logardian()
+
+logger.configure({
+    colors: {
+        timestamp: '#ABC'
+        traceId: '#CCC
+        label: '#FFFFFF
+        message: '#FFFFFF
+        trace: '#FFFFFF
+        stack: '#000000
+    }
+})
+```
+
 ## Environment Variables
 
 `NODE_ENV` production start does not show debug() logs
