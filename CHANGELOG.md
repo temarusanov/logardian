@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/temarusanov/logardian/compare/v3.1.0...v3.2.0) (2022-10-13)
+
+
+### Features
+
+* add getTraceId function ([b05d541](https://github.com/temarusanov/logardian/commit/b05d541c74a9557f9d8c5c15273c10915ceed4f3))
+
 # [3.1.0](https://github.com/temarusanov/logardian/compare/v3.0.0...v3.1.0) (2022-10-06)
 
 
