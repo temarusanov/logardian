@@ -100,4 +100,11 @@ export class Logardian {
     createTraceId(traceId: string): void {
         return this._instance.createTraceId(traceId)
     }
+
+    /**
+     * Get current traceId
+     */
+    getTraceId(): string {
+        return this._instance.getTraceId()
+    }
 }

@@ -33,19 +33,30 @@ npm i --save logardian
 ## Usage/Examples
 
 ```ts
-import Logardian from 'logardian'
+import { Logardian } from 'logardian'
 
 const logger = new Logardian()
 
 logger.configure({
-    trace: false
+    trace: false,
+    labels: ['users', '*.debug']
 })
 
 logger.log(`Hi! I'm info log example`)
-logger.warn(`Hi! I'm warn log example`, { trace: false })
+logger.warn(`Hi! I'm warn log example`)
 logger.error(`Hi! I'm error log example`)
-logger.verbose(`Hi! I'm verbose log example`, { label: 'database' })
-logger.debug(`Hi! I'm debug log example`, { some: 'object' })
+logger.verbose(`Hi! I'm verbose log example`)
+logger.debug({ some: 'object' })
+
+logger.markTime('marker')
+
+setTimeout(() => {
+    logger.measureTime('marker', 'Function take {n} ms to execute')
+}, 2000)
+
+logger.log(`I will log`, { label: 'users' })
+logger.log(`I will log too`, { label: 'auth.debug' })
+logger.log(`I will not log :(`, { label: 'database' })
 ```
 
 ### Default output
@@ -62,11 +73,17 @@ logger.configure({
 ```
 
 ```bash
-{"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm info log example","level":"log"}
-{"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm warn log example","level":"warn"}
-{"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm error log example","level":"error"}
-{"timestamp":"2021-11-05T05:54:10.920Z","message":"Hi! I'm verbose log example","level":"verbose","label":"database"}
-{"timestamp":"2021-11-05T05:54:10.920Z","message":"{\n\"some\":\"object\"\n}","level":"debug"}
+{"timestamp":"2022-10-10T12:39:40.012Z","message":"Starting Nest application...","level":"log","traceId":"1fbc0d23ba3a"}
+{"timestamp":"2022-10-10T12:39:40.017Z","message":"AppModule dependencies initialized","level":"log","traceId":"1fbc0d23ba3a"}
+{"timestamp":"2022-10-10T12:39:40.020Z","message":"Nest application successfully started","level":"log","traceId":"c7d5cbef10ea"}
+{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm info log example","level":"log","traceId":"81524f4795e7"}
+{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm warn log example","level":"warn","traceId":"81524f4795e7"}
+{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm error log example","level":"error","traceId":"81524f4795e7"}
+{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm verbose log example","level":"verbose","traceId":"81524f4795e7"}
+{"timestamp":"2022-10-10T12:39:40.022Z","message":"{\"some\":\"object\"}","level":"debug","traceId":"81524f4795e7"}
+{"timestamp":"2022-10-10T12:39:40.023Z","message":"I will log","level":"log","label":"users","traceId":"81524f4795e7"}
+{"timestamp":"2022-10-10T12:39:40.024Z","message":"I will log too","level":"log","label":"auth.debug","traceId":"81524f4795e7"}
+{"timestamp":"2022-10-10T12:39:42.024Z","message":"Function take 2002.041 ms to execute","level":"timer","traceId":"81524f4795e7"}
 ```
 
 ### Labels
@@ -89,7 +106,7 @@ logger.log('Database connected', { label: 'database' }) // will NOT log
 logger.log('User entity created', { label: 'database.users' }) // will NOT log
 ```
 
-### Async hook storage
+### Trace IDs
 
 Use async hooks to group your logs in one stream. Works out of the box! You can turn them off in the `configure()` function
 
@@ -112,6 +129,25 @@ Or provide your own trace ID
 ```ts
 logger.createTraceId('my-super-trace-id')
 // [2022-10-05 11:34:47.317] [my-super-trace-id] log: Mail for user was sent
+```
+
+### Colors
+
+If you don't like the set of colors logardian provides you can change them in `configure()` function.
+
+```ts
+const logger = new Logardian()
+
+logger.configure({
+    colors: {
+        timestamp: '#ABC'
+        traceId: '#CCC
+        label: '#FFFFFF
+        message: '#FFFFFF
+        trace: '#FFFFFF
+        stack: '#000000
+    }
+})
 ```
 
 ## Environment Variables
@@ -139,7 +175,7 @@ async function bootstrap(): Promise<void> {
 }
 ```
 
-#### How can I use logardian in my service?
+#### How can I use logardian in my NestJS service?
 
 Simply create a new logger class
 
