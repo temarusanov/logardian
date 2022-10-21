@@ -1,3 +1,24 @@
+# [4.0.0](https://github.com/temarusanov/logardian/compare/v3.2.0...v4.0.0) (2022-10-21)
+
+
+### Bug Fixes
+
+* otel to devDeps for npm ci ([d18594f](https://github.com/temarusanov/logardian/commit/d18594fcafc8d66393e408dfc7921bfdf1df89d7))
+* remove console.logs ([1744734](https://github.com/temarusanov/logardian/commit/1744734afdcc7fe54131f0482802404e37d168fb))
+
+
+* Merge pull request #33 from temarusanov/fix/trace-id ([b24970a](https://github.com/temarusanov/logardian/commit/b24970ab522bbcba60ae65267d71d9802c9be2ba)), closes [#33](https://github.com/temarusanov/logardian/issues/33)
+
+
+### Features
+
+* otel trace ids ([b5f4bb2](https://github.com/temarusanov/logardian/commit/b5f4bb20ad9c9c4da431d6b7509933f290a433bc))
+
+
+### BREAKING CHANGES
+
+* now with OTEL support
+
 # [3.2.0](https://github.com/temarusanov/logardian/compare/v3.1.0...v3.2.0) (2022-10-13)
 
 
