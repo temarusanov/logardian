@@ -24,12 +24,14 @@
     "lib",
     "CHANGELOG.md"
   ],
+  "peerDependencies": {
+    "@opentelemetry/api": "^1.2.x"
+  },
   "dependencies": {
     "chalk": "4.1.2",
     "dotenv": "16.0.3",
     "micromatch": "4.0.5",
-    "nanoid": "3.0.0",
-    "winston": "3.8.2"
+    "nanoid": "3.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",

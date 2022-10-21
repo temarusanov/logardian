@@ -3,4 +3,5 @@ export interface JsonLog {
     level: string
     label: string
     stack?: string
+    traceId?: string
 }

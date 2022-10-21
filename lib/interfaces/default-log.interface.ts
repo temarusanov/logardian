@@ -6,4 +6,5 @@ export interface DefaultLog {
     label: string
     stack?: string
     trace?: boolean
+    traceId?: string
 }

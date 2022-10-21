@@ -7,9 +7,9 @@ import { isMatch } from 'micromatch'
 import * as chalk from 'chalk'
 import { LogMethodOptions } from './interfaces/log-method-options.interface'
 import { LoggerConfig } from './interfaces/logger-options.interface'
-import { AsyncStorage } from './async-storage'
 import { JsonLog } from './interfaces/json-log.interface'
 import { DefaultLog } from './interfaces/default-log.interface'
+import { context, trace } from '@opentelemetry/api'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -18,7 +18,6 @@ const CONTEXT_INDEX_IN_STACK = 6
 
 export class Logger implements LoggerInterface {
     private _timers: Map<string, number> = new Map()
-    private _asyncStorage = new AsyncStorage()
 
     _config: LoggerConfig = {
         labels: ['*'],
@@ -96,12 +95,19 @@ export class Logger implements LoggerInterface {
         return time
     }
 
-    createTraceId(traceId: string): void {
-        this._asyncStorage.createTraceId(traceId)
-    }
+    getTraceId(): string | undefined {
+        try {
+            const currentSpan = trace.getSpan(context.active())
 
-    getTraceId(): string {
-        return this._asyncStorage.getTraceId()
+            if (!currentSpan) return
+
+            const spanContext = trace.getSpan(context.active()).spanContext()
+
+            return spanContext.traceId
+        } catch (error) {
+            console.log(error)
+            return
+        }
     }
 
     private _getTimestamp(): string {
@@ -125,8 +131,13 @@ export class Logger implements LoggerInterface {
         }
 
         let computedMessage = ''
+        let traceId: string | undefined
 
         const { json } = this._config
+
+        if (this._config.traceId) {
+            traceId = this._getTraceId(message)
+        }
 
         if (json) {
             computedMessage = this._createJsonLog({
@@ -134,6 +145,7 @@ export class Logger implements LoggerInterface {
                 label,
                 level: logLevel,
                 stack,
+                traceId,
             })
         } else {
             const { trace } = options
@@ -144,6 +156,7 @@ export class Logger implements LoggerInterface {
                 level: logLevel,
                 stack,
                 trace,
+                traceId,
             })
         }
 
@@ -151,11 +164,7 @@ export class Logger implements LoggerInterface {
     }
 
     private _createJsonLog(data: JsonLog): string {
-        const { message, level, label, stack } = data
-
-        const traceId = this._config.traceId
-            ? this._asyncStorage.getTraceId()
-            : undefined
+        const { message, level, label, stack, traceId } = data
 
         return `\n${JSON.stringify({
             timestamp: new Date().toISOString(),
@@ -172,7 +181,7 @@ export class Logger implements LoggerInterface {
     }
 
     private _createDefaultLog(data: DefaultLog): string {
-        const { message, level, label, stack, trace } = data
+        const { message, level, label, stack, trace, traceId } = data
         const { colors } = this._config
 
         const color = this._getColorByLogLevel(level)
@@ -187,9 +196,7 @@ export class Logger implements LoggerInterface {
             : ` ${message as string}`
 
         const timestamp = this._getTimestamp()
-        const traceId = this._config.traceId
-            ? ` [${this._asyncStorage.getTraceId()}]`
-            : ''
+        const formattedTraceId = traceId !== undefined ? ` [${traceId}]` : ''
 
         const labelMessage = label ? ' [' + label + ']' : ''
 
@@ -209,7 +216,7 @@ export class Logger implements LoggerInterface {
 
         const finalMessage =
             chalk.hex(colors.timestamp)(timestamp) +
-            chalk.hex(colors.traceId)(traceId) +
+            chalk.hex(colors.traceId)(formattedTraceId) +
             formattedLogLevel +
             chalk.hex(colors.label)(labelMessage) +
             coloredOutput +
@@ -218,6 +225,29 @@ export class Logger implements LoggerInterface {
             '\n'
 
         return finalMessage
+    }
+
+    private _getTraceId(message: any): string | undefined {
+        try {
+            const currentSpan = trace.getSpan(context.active())
+
+            if (!currentSpan) return
+
+            const spanContext = trace.getSpan(context.active()).spanContext()
+
+            const parsedMessage = isPlainObject(message)
+                ? JSON.stringify(message, (key, value) =>
+                      typeof value === 'bigint' ? value.toString() : value,
+                  )
+                : (message as string)
+
+            currentSpan.addEvent(parsedMessage)
+
+            return spanContext.traceId
+        } catch (error) {
+            console.log(error)
+            return
+        }
     }
 
     private _findOptions(args: unknown[]): LogMethodOptions {
