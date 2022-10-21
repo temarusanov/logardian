@@ -4,7 +4,7 @@ Inspired by NestJS Logger, Logardian was built to output minimalistic, readable 
 
 ## Roadmap
 
-- [x] Async hooks
+- [x] OTEL Support
 - [x] NodeJS v16.17.1
 - [ ] Logging to file
 
@@ -114,13 +114,13 @@ Use trace ID from your OTEL
 // your create user logic
 
 logger.log('User has been created')
-// [2022-10-05 11:34:41.621] [7a22fdae427ddd12ace3a129e344121b] log: User has been created
+// [2022-10-05 11:34:41.621] [7a22fdae427ddd12ace3a129e344121b]    LOG: User has been created
 //                                    ^ unique trace id
 
 // your send email for user logic here
 
 logger.log('Email for user was sent')
-// [2022-10-05 11:34:47.317] [7a22fdae427ddd12ace3a129e344121b] log: Mail for user was sent
+// [2022-10-05 11:34:47.317] [7a22fdae427ddd12ace3a129e344121b]    LOG: Mail for user was sent
 //                                    ^ same trace id
 
 const traceId = logger.getTraceId()
