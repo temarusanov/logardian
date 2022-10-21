@@ -7,7 +7,6 @@ import { mergeDeep } from './utils/utils'
 
 export class Logardian {
     private static _instance: Logger
-    private hexReg = /^#([0-9a-f]{3}){1,2}$/i
 
     private get _instance(): Logger {
         if (!Logardian._instance) {
@@ -91,20 +90,10 @@ export class Logardian {
     ): number {
         return this._instance.measureTime(marker, message, options)
     }
-
     /**
-     * Create your specific trace id for each stream
-     *
-     * @param traceId any string value
+     * Get current traceId or `undefined`
      */
-    createTraceId(traceId: string): void {
-        return this._instance.createTraceId(traceId)
-    }
-
-    /**
-     * Get current traceId
-     */
-    getTraceId(): string {
+    getTraceId(): string | undefined {
         return this._instance.getTraceId()
     }
 }
