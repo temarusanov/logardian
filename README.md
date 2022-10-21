@@ -73,17 +73,17 @@ logger.configure({
 ```
 
 ```bash
-{"timestamp":"2022-10-10T12:39:40.012Z","message":"Starting Nest application...","level":"log","traceId":"1fbc0d23ba3a"}
-{"timestamp":"2022-10-10T12:39:40.017Z","message":"AppModule dependencies initialized","level":"log","traceId":"1fbc0d23ba3a"}
-{"timestamp":"2022-10-10T12:39:40.020Z","message":"Nest application successfully started","level":"log","traceId":"c7d5cbef10ea"}
-{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm info log example","level":"log","traceId":"7a22fdae427ddd12ace3a129e344121b"}
-{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm warn log example","level":"warn","traceId":"7a22fdae427ddd12ace3a129e344121b"}
-{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm error log example","level":"error","traceId":"7a22fdae427ddd12ace3a129e344121b"}
-{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm verbose log example","level":"verbose","traceId":"7a22fdae427ddd12ace3a129e344121b"}
-{"timestamp":"2022-10-10T12:39:40.022Z","message":"{\"some\":\"object\"}","level":"debug","traceId":"7a22fdae427ddd12ace3a129e344121b"}
-{"timestamp":"2022-10-10T12:39:40.023Z","message":"I will log","level":"log","label":"users","traceId":"7a22fdae427ddd12ace3a129e344121b"}
-{"timestamp":"2022-10-10T12:39:40.024Z","message":"I will log too","level":"log","label":"auth.debug","traceId":"7a22fdae427ddd12ace3a129e344121b"}
-{"timestamp":"2022-10-10T12:39:42.024Z","message":"Function take 2002.041 ms to execute","level":"timer","traceId":"7a22fdae427ddd12ace3a129e344121b"}
+{"timestamp":"2022-10-10T12:39:40.012Z","message":"Starting Nest application...","level":"log"}
+{"timestamp":"2022-10-10T12:39:40.017Z","message":"AppModule dependencies initialized","level":"log"}
+{"timestamp":"2022-10-10T12:39:40.020Z","message":"Nest application successfully started","level":"log"}
+{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm info log example","level":"log"}
+{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm warn log example","level":"warn"}
+{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm error log example","level":"error"}
+{"timestamp":"2022-10-10T12:39:40.022Z","message":"Hi! I'm verbose log example","level":"verbose"}
+{"timestamp":"2022-10-10T12:39:40.022Z","message":"{\"some\":\"object\"}","level":"debug"}
+{"timestamp":"2022-10-10T12:39:40.023Z","message":"I will log","level":"log","label":"users"}
+{"timestamp":"2022-10-10T12:39:40.024Z","message":"I will log too","level":"log","label":"auth.debug"}
+{"timestamp":"2022-10-10T12:39:42.024Z","message":"Function take 2002.041 ms to execute","level":"timer"}
 ```
 
 ### Labels
