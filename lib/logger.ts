@@ -105,7 +105,6 @@ export class Logger implements LoggerInterface {
 
             return spanContext.traceId
         } catch (error) {
-            console.log(error)
             return
         }
     }
@@ -245,7 +244,6 @@ export class Logger implements LoggerInterface {
 
             return spanContext.traceId
         } catch (error) {
-            console.log(error)
             return
         }
     }
